@@ -10,7 +10,7 @@ import { Parser as ParserBase } from '../../core/parser.ts';
  * `char('"').neg().star()` (everything until a closing quote).
  */
 export class NegParser<R> extends ParserBase<string> {
-  readonly delegate: Parser<R>;
+  delegate: Parser<R>;
   readonly message: string;
 
   constructor(parser: Parser<R>, message: string) {
@@ -34,6 +34,18 @@ export class NegParser<R> extends ParserBase<string> {
 
   override get children(): readonly Parser<unknown>[] {
     return [this.delegate];
+  }
+
+  override copy(): this {
+    const cloned = Object.create(Object.getPrototypeOf(this) as object) as this;
+    Object.assign(cloned, this);
+    return cloned;
+  }
+
+  override replace(source: Parser<unknown>, target: Parser<unknown>): void {
+    if (this.delegate === source) {
+      this.delegate = target as Parser<R>;
+    }
   }
 }
 

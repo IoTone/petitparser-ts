@@ -38,4 +38,26 @@ export abstract class Parser<R> {
   toString(): string {
     return this.constructor.name;
   }
+
+  /**
+   * Returns a copy of this parser with the same configuration and the same
+   * child references. Default returns `this` (safe for stateless leaves);
+   * `DelegateParser` and `ListParser` override to produce a fresh instance
+   * whose mutable child slots can be rebound by `replace()`. Used by
+   * `transformParser` to rewrite parser graphs without disturbing the
+   * original tree.
+   */
+  copy(): this {
+    return this;
+  }
+
+  /**
+   * Replace any direct child reference equal to `source` (by identity) with
+   * `target`. Default no-op for leaves; combinators override to mutate their
+   * child slots. Used by `transformParser` after `copy()` to install rewritten
+   * children.
+   */
+  replace(_source: Parser<unknown>, _target: Parser<unknown>): void {
+    // No children to replace.
+  }
 }

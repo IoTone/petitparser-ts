@@ -11,9 +11,9 @@ import { type Result, success } from '../../core/result.ts';
  * but expressed directly so it doesn't depend on `seq` / `pick`.
  */
 export class SkipParser<R> extends Parser<R> {
-  readonly delegate: Parser<R>;
-  readonly before: Parser<unknown> | null;
-  readonly after: Parser<unknown> | null;
+  delegate: Parser<R>;
+  before: Parser<unknown> | null;
+  after: Parser<unknown> | null;
 
   constructor(delegate: Parser<R>, before: Parser<unknown> | null, after: Parser<unknown> | null) {
     super();
@@ -60,6 +60,18 @@ export class SkipParser<R> extends Parser<R> {
     if (this.before) c.push(this.before);
     if (this.after) c.push(this.after);
     return c;
+  }
+
+  override copy(): this {
+    const cloned = Object.create(Object.getPrototypeOf(this) as object) as this;
+    Object.assign(cloned, this);
+    return cloned;
+  }
+
+  override replace(source: Parser<unknown>, target: Parser<unknown>): void {
+    if (this.delegate === source) this.delegate = target as Parser<R>;
+    if (this.before === source) this.before = target;
+    if (this.after === source) this.after = target;
   }
 }
 

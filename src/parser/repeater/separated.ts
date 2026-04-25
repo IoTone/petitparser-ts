@@ -39,8 +39,8 @@ export class SeparatedList<R, S> {
  * `SeparatedList<R, S>`. Replaces upstream's older dynamic `separatedBy` API.
  */
 export class SeparatedRepeatingParser<R, S> extends Parser<SeparatedList<R, S>> {
-  readonly element: Parser<R>;
-  readonly separator: Parser<S>;
+  element: Parser<R>;
+  separator: Parser<S>;
   readonly min: number;
   readonly max: number;
 
@@ -97,6 +97,17 @@ export class SeparatedRepeatingParser<R, S> extends Parser<SeparatedList<R, S>> 
 
   override get children(): readonly Parser<unknown>[] {
     return [this.element, this.separator];
+  }
+
+  override copy(): this {
+    const cloned = Object.create(Object.getPrototypeOf(this) as object) as this;
+    Object.assign(cloned, this);
+    return cloned;
+  }
+
+  override replace(source: Parser<unknown>, target: Parser<unknown>): void {
+    if (this.element === source) this.element = target as Parser<R>;
+    if (this.separator === source) this.separator = target as Parser<S>;
   }
 }
 

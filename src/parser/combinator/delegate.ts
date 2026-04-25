@@ -32,4 +32,16 @@ export abstract class DelegateParser<I, O> extends Parser<O> {
   override get children(): readonly Parser<unknown>[] {
     return [this.delegate];
   }
+
+  override copy(): this {
+    const cloned = Object.create(Object.getPrototypeOf(this) as object) as this;
+    Object.assign(cloned, this);
+    return cloned;
+  }
+
+  override replace(source: Parser<unknown>, target: Parser<unknown>): void {
+    if (this.delegate === source) {
+      this.delegate = target as Parser<I>;
+    }
+  }
 }

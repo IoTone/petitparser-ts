@@ -8,10 +8,12 @@ export const UNBOUNDED = Number.MAX_SAFE_INTEGER;
  * `delegate` (the inner parser), `min` (required minimum count), and `max`
  * (optional maximum, `UNBOUNDED` for none).
  *
- * Subclasses implement the actual repetition strategy.
+ * `delegate` is intentionally mutable so `transformParser` can rebind it via
+ * `replace()`. Subclasses with additional child slots (e.g. `limit`) override
+ * `replace()` to handle them.
  */
 export abstract class RepeatingParser<R, V> extends Parser<V> {
-  readonly delegate: Parser<R>;
+  delegate: Parser<R>;
   readonly min: number;
   readonly max: number;
 
@@ -26,5 +28,17 @@ export abstract class RepeatingParser<R, V> extends Parser<V> {
 
   override get children(): readonly Parser<unknown>[] {
     return [this.delegate];
+  }
+
+  override copy(): this {
+    const cloned = Object.create(Object.getPrototypeOf(this) as object) as this;
+    Object.assign(cloned, this);
+    return cloned;
+  }
+
+  override replace(source: Parser<unknown>, target: Parser<unknown>): void {
+    if (this.delegate === source) {
+      this.delegate = target as Parser<R>;
+    }
   }
 }

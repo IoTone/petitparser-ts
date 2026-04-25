@@ -12,7 +12,7 @@ import { UNBOUNDED } from './repeating.ts';
  * matches.
  */
 export class RepeatingCharacterParser extends Parser<string> {
-  readonly delegate: CharacterParser;
+  delegate: CharacterParser;
   readonly min: number;
   readonly max: number;
   readonly message: string;
@@ -49,6 +49,18 @@ export class RepeatingCharacterParser extends Parser<string> {
 
   override get children(): readonly Parser<unknown>[] {
     return [this.delegate];
+  }
+
+  override copy(): this {
+    const cloned = Object.create(Object.getPrototypeOf(this) as object) as this;
+    Object.assign(cloned, this);
+    return cloned;
+  }
+
+  override replace(source: Parser<unknown>, target: Parser<unknown>): void {
+    if (this.delegate === source) {
+      this.delegate = target as CharacterParser;
+    }
   }
 }
 

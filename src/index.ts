@@ -89,5 +89,60 @@ export {
   timesString,
 } from './parser/repeater/character.ts';
 
+// Actions
+export { MapParser, map } from './parser/action/map.ts';
+export { pick } from './parser/action/pick.ts';
+export { permute } from './parser/action/permute.ts';
+export { cast } from './parser/action/cast.ts';
+export { castList } from './parser/action/cast_list.ts';
+export { constant } from './parser/action/constant.ts';
+export { WhereParser, where } from './parser/action/where.ts';
+export { FlattenParser, flatten } from './parser/action/flatten.ts';
+export { TokenParser, token } from './parser/action/token.ts';
+export { TrimParser, trim } from './parser/action/trim.ts';
+export { labeled } from './parser/action/labeled.ts';
+
+// Matcher
+export {
+  allMatches,
+  type AllMatchesOptions,
+  type ParserMatch,
+} from './matcher/matches.ts';
+export { toPattern, type ParserPattern } from './matcher/pattern.ts';
+
+// Definition
+export { GrammarDefinition } from './definition/grammar.ts';
+
+// Expression builder
+export { ExpressionBuilder } from './expression/builder.ts';
+export { ExpressionGroup } from './expression/group.ts';
+
+// Reflection
+export { allParser } from './reflection/iterable.ts';
+export { transformParser } from './reflection/transform.ts';
+export {
+  FlattenChoice,
+  RemoveDuplicate,
+  allOptimizerRules,
+  optimize,
+  type OptimizeOptions,
+  type OptimizerRule,
+} from './reflection/optimize.ts';
+export {
+  LeftRecursionRule,
+  UnresolvedSettableRule,
+  allLinterRules,
+  linter,
+  type LinterIssue,
+  type LinterOptions,
+  type LinterRule,
+  type LinterType,
+} from './reflection/linter.ts';
+
+// Debug
+export { profile, type ProfileFrame, type ProfileOptions } from './debug/profile.ts';
+export { trace, type TraceEvent, type TraceOptions } from './debug/trace.ts';
+export { progress, type ProgressFrame, type ProgressOptions } from './debug/progress.ts';
+
 // Install fluent / instance-method API on Parser.prototype and CharacterParser.prototype.
 import './parser/_fluent/index.ts';

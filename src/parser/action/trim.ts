@@ -11,8 +11,8 @@ import { DelegateParser } from '../combinator/delegate.ts';
  * trimmer eats arbitrary leading/trailing whitespace runs.
  */
 export class TrimParser<R> extends DelegateParser<R, R> {
-  readonly before: Parser<unknown>;
-  readonly after: Parser<unknown>;
+  before: Parser<unknown>;
+  after: Parser<unknown>;
 
   constructor(parser: Parser<R>, before: Parser<unknown>, after: Parser<unknown>) {
     super(parser);
@@ -33,6 +33,16 @@ export class TrimParser<R> extends DelegateParser<R, R> {
     cursor = this.delegate.fastParseOn(buffer, cursor);
     if (cursor < 0) return -1;
     return consumeAllFast(this.after, buffer, cursor);
+  }
+
+  override get children(): readonly Parser<unknown>[] {
+    return [this.delegate, this.before, this.after];
+  }
+
+  override replace(source: Parser<unknown>, target: Parser<unknown>): void {
+    super.replace(source, target);
+    if (this.before === source) this.before = target;
+    if (this.after === source) this.after = target;
   }
 }
 
