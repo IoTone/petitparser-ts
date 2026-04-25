@@ -1,12 +1,12 @@
 import { context, type Context } from './context.ts';
-import { success, type Result } from './result.ts';
+import type { Result } from './result.ts';
 
 /**
  * Abstract base of every parser. Generic in the result type `R`.
  *
- * Phase 0 surface is intentionally minimal — only `parseOn`, `fastParseOn`,
- * and `parse`. `copy`, `children`, `replace`, and `isEqualTo` arrive with the
- * reflection layer in Phase 5.
+ * Phase 1 surface: `parseOn` (abstract), plus convenience `fastParseOn`,
+ * `parse`, and `accept`. Reflection-shaped methods (`copy`, `replace`,
+ * `isEqualTo`, full `children` semantics) arrive in Phase 5.
  */
 export abstract class Parser<R> {
   abstract parseOn(context: Context): Result<R>;
@@ -19,15 +19,18 @@ export abstract class Parser<R> {
   parse(input: string): Result<R> {
     return this.parseOn(context(input));
   }
-}
 
-/** Always succeeds, consumes nothing, returns `undefined`. Phase 0 proof of life. */
-export class EpsilonParser extends Parser<undefined> {
-  override parseOn(context: Context): Result<undefined> {
-    return success(context, undefined);
+  /** Returns `true` iff `parse(input)` succeeds (regardless of remaining input). */
+  accept(input: string): boolean {
+    return this.fastParseOn(input, 0) >= 0;
   }
-}
 
-export function epsilon(): Parser<undefined> {
-  return new EpsilonParser();
+  /**
+   * Direct sub-parsers of this parser. Combinators override this; leaf parsers
+   * (character, epsilon, etc.) return an empty list. The full reflection API
+   * (`replace`, `isEqualTo`, `copy`) lands in Phase 5.
+   */
+  get children(): readonly Parser<unknown>[] {
+    return [];
+  }
 }
