@@ -33,4 +33,9 @@ export abstract class Parser<R> {
   get children(): readonly Parser<unknown>[] {
     return [];
   }
+
+  /** Parsers default to identifying as their class name. Subclasses override to add detail. */
+  toString(): string {
+    return this.constructor.name;
+  }
 }

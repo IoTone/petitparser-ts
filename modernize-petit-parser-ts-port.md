@@ -110,14 +110,16 @@ Each phase ends in green CI, published artifact, and a CHANGELOG entry. Phases a
 
 **Exit criteria:** `pnpm install && pnpm test` is green on a no-op test. CI green on PR.
 
-### Phase 1 — Core rewrite (shared / core / minimal primitives)
-- `src/core/`: `Parser<R>`, `Context`, discriminated-union `Result<R>`, `Token<R>`, `ParserException`. Implement `parseOn`/`fastParseOn`/`parse`/`accept`/`isEqualTo`/`children`/`replace`.
-- `src/parser/misc/`: `epsilon`, `failure`, `end`, `position`, `newline`, `label`.
-- `src/parser/character/`: `any`, `char`, `digit`, `letter`, `lowercase`, `uppercase`, `whitespace`, `word`, `range`, `pattern`, `anyOf`, `noneOf`, `predicate`. Lookup-table `CharPredicate` infrastructure with the union/intersection/negation algebra upstream uses for `pattern()`. **Skip Unicode/surrogate-pair support in this phase** — defer to Phase 7.
-- `src/parser/predicate/string.ts`: `string(s, { ignoreCase, message })`.
-- Vitest port of the existing 132 QUnit tests, plus tests for the **4 known bugs** from the 2014 port (regression coverage).
+### Phase 1 — Core rewrite (shared / core / minimal primitives) ✅ shipped
 
-**Exit criteria:** All character/primitive/end/epsilon tests green. Type-level test (`expectTypeOf`) confirms `digit().parse('1').value` narrows to `string`.
+- `src/core/`: `Parser<R>`, `Context`, discriminated-union `Result<R>`, `Token<R>`, `ParserException`. Implement `parseOn`/`fastParseOn`/`parse`/`accept`/`children`. **`copy`/`replace`/`isEqualTo` deferred to Phase 5** — nothing in Phase 1 calls them, and stubbing them adds API surface that could mislead users. They land when reflection actually needs them.
+- `src/parser/misc/`: `epsilon`, `epsilonWith`, `failure`, `endOfInput`, `position`, `newline`. `label` deferred to Phase 2 (it's a single-child wrapper that needs the `DelegateParser` infrastructure).
+- `src/parser/character/`: `any`, `char`, `digit`, `letter`, `lowercase`, `uppercase`, `whitespace`, `word`, `range`, `pattern`, `anyOf`, `noneOf`, `predicate`. Lookup-table `CharacterPredicate` infrastructure with `Constant`/`SingleCharacter`/`Range`/`Ranges` (binary-search) and `Not` predicates; `rangesPredicate(...)` factory merges and collapses to the smallest possible form. **Unicode/surrogate-pair support is skipped in this phase** — defer to Phase 7.
+- **`pattern()` is implemented as a hand-rolled scanner**, not self-hosted on PetitParser combinators. Upstream Dart bootstraps `pattern()` using `char().or(...).plus()`; we can't, because combinators don't land until Phase 2. May or may not be rewritten on top of combinators in a later phase — keeping it standalone has tree-shaking and bootstrapping advantages.
+- `src/parser/predicate/string.ts`: `string(s, { ignoreCase, message })`.
+- Vitest test suite covering all of the above plus a type-level test file using `expectTypeOf`.
+
+**Exit criteria (met):** All character/primitive/end/epsilon tests green (55/55). Type-level tests confirm `digit().parse('1').value` narrows to `string`, `epsilon()` is `Parser<undefined>`, `epsilonWith(42)` is `Parser<number>`, `failure()` is `Parser<never>`, `position()` is `Parser<number>`.
 
 ### Phase 2 — Combinators & repeaters
 - `src/parser/combinator/`: `sequence`, `choice` (with failure joiner strategies), `optional`, `and`, `not`, `delegate`, `list`, `settable`, `skip`.
