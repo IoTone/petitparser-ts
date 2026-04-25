@@ -1,9 +1,68 @@
 {
-  "name": "petitparserts",
-  "version": "0.1.0",
+  "name": "@iotone/petitparser",
+  "version": "0.0.0",
+  "description": "TypeScript port of Lukas Renggli's PetitParser — a dynamic parser combinator framework. Modernized fork of the 2013 TS port to track upstream Dart PetitParser 7.x.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "clean": "rm -rf dist node_modules/.vite coverage"
+  },
+  "keywords": [
+    "parser",
+    "parser-combinator",
+    "peg",
+    "parsing-expression-grammar",
+    "petitparser",
+    "typescript"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iotone/petitparser-ts.git"
+  },
+  "homepage": "https://github.com/iotone/petitparser-ts",
+  "bugs": {
+    "url": "https://github.com/iotone/petitparser-ts/issues"
+  },
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-concat": "~0.1.2",
-    "grunt-ts": "~1.4.1"
-  }
+    "@types/node": "^22.10.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.18.0",
+    "prettier": "^3.4.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.21.0",
+    "vitest": "^2.1.8"
+  },
+  "packageManager": "pnpm@9.15.4"
 }
