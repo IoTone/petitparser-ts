@@ -1,0 +1,19 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "out": "docs/api",
+  "tsconfig": "tsconfig.json",
+  "name": "petitparser-ts",
+  "readme": "README.md",
+  "githubPages": false,
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "excludeInternal": true,
+  "skipErrorChecking": false,
+  "categorizeByGroup": true,
+  "navigationLinks": {
+    "Tutorial": "https://github.com/iotone/petitparser-ts/blob/master/docs/tutorial.md",
+    "Examples": "https://github.com/iotone/petitparser-ts/tree/master/examples",
+    "Plan": "https://github.com/iotone/petitparser-ts/blob/master/modernize-petit-parser-ts-port.md"
+  }
+}

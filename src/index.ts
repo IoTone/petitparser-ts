@@ -144,5 +144,8 @@ export { profile, type ProfileFrame, type ProfileOptions } from './debug/profile
 export { trace, type TraceEvent, type TraceOptions } from './debug/trace.ts';
 export { progress, type ProgressFrame, type ProgressOptions } from './debug/progress.ts';
 
+// Indent-sensitive parsing (experimental)
+export { Indent } from './indent/indent.ts';
+
 // Install fluent / instance-method API on Parser.prototype and CharacterParser.prototype.
 import './parser/_fluent/index.ts';

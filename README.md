@@ -6,20 +6,44 @@ This is a **modernized fork** of the 2013–2014 TypeScript port by Rasmus Schul
 
 ## Status
 
-> **Pre-1.0 — under active modernization.** Not yet published to npm. Not API-stable.
-
 | Phase | Scope | Status |
 | --- | --- | :-: |
 | 0 | Foundation: tooling, build, test, CI | ✅ |
-| 1 | Core rewrite: `Parser<R>`, primitives, character parsers | ⏳ |
-| 2 | Combinators & repeaters (typed `seq2..seq9`, `starSeparated`) | ⏳ |
-| 3 | Actions, matcher, `GrammarDefinition` | ⏳ |
-| 4 | `ExpressionBuilder<T>` | ⏳ |
-| 5 | Reflection, optimizer, linter, debug helpers | ⏳ |
-| 6 | Examples (JSON, URI, Math, Regexp, Lisp, Prolog) | ⏳ |
-| 7 | Unicode, indent-sensitive, polish, v1.0.0 | ⏳ |
+| 1 | Core rewrite: `Parser<R>`, primitives, character parsers | ✅ |
+| 2 | Combinators & repeaters (variadic typed `seq`/`or`, `starSeparated`) | ✅ |
+| 3 | Actions, matcher, `GrammarDefinition` | ✅ |
+| 4 | `ExpressionBuilder<T>` | ✅ |
+| 5 | Reflection, optimizer, linter, debug helpers | ✅ |
+| 6 | Examples (JSON, URI, Math, Lisp, Prolog) | ✅ |
+| 7 | Unicode, indent-sensitive, polish | ✅ |
 
-See [`modernize-petit-parser-ts-port.md`](./modernize-petit-parser-ts-port.md) for the full plan.
+Examples deferred from Phase 6: Regexp, Smalltalk, Pascal, Dart. v1.0.0 publish, gh-pages docs deploy, and a JSON-vs-`JSON.parse` benchmark are pending maintainer action — see the modernization plan.
+
+See [`modernize-petit-parser-ts-port.md`](./modernize-petit-parser-ts-port.md) for the full plan and design decisions.
+
+## Quick start
+
+```ts
+import { char, digit, GrammarDefinition } from '@iotone/petitparser';
+
+class Math extends GrammarDefinition<number> {
+  start() { return this.ref0(this.expr).end(); }
+
+  expr() {
+    return this.ref0(this.term)
+      .seq(char('+').trim().seq(this.ref0(this.expr)).optional())
+      .map(([l, r]) => r === undefined ? l : l + r[1]);
+  }
+
+  term() {
+    return digit().plus().flatten().trim().map(Number);
+  }
+}
+
+new Math().build().parse('1 + 2 + 3').value;  // 6
+```
+
+For a deeper walkthrough see [`docs/tutorial.md`](./docs/tutorial.md).
 
 ## Development
 
@@ -29,17 +53,25 @@ Requires Node 20+ and pnpm.
 pnpm install
 pnpm verify       # lint + typecheck + test + build
 pnpm test:watch   # vitest in watch mode
+pnpm docs         # generate API reference into docs/api/
 ```
 
 ## Layout
 
 ```
-src/      # modern TS source (target: mirror upstream `lib/src/<area>/<concept>.dart`)
-test/     # vitest tests
-legacy/   # 2014 source — kept for cross-checking behavior, not built
-docs/     # tutorial + API reference
-examples/ # ports of dart-petitparser-examples
+src/        modern TS source (mirrors upstream `lib/src/<area>/<concept>.dart`)
+test/       vitest tests
+legacy/     2014 source — kept for cross-checking behavior, not built
+docs/       tutorial + generated API reference (docs/api is gitignored)
+examples/   JSON, URI, Math, Lisp, Prolog
 ```
+
+## Documentation
+
+- **[Tutorial](./docs/tutorial.md)** — building up from "hello, world" to a full JSON parser.
+- **[Examples](./examples)** — five real grammars with tests.
+- **API reference** — `pnpm docs` generates a TypeDoc site at `docs/api/index.html`.
+- **[Modernization plan](./modernize-petit-parser-ts-port.md)** — phase-by-phase roadmap and design decisions.
 
 ## Attribution
 
