@@ -277,7 +277,15 @@ const CORPUS: ReadonlyArray<{
   {file: "lishogi_game_2025_11_08_pedestrian_vs_Anonymous_t2O34rvK.kif", moves: 13,
    exercises: "lishogi 9×9 game with multiple captures, drops, '* comment' lines"},
   {file: "lishogi_game_2021_09_18_1-kyu_magicshow_vs_6-Dan_Sniper_jYLWr57k.kif", moves: 78,
-   exercises: "78-move 平手 game ending in 詰み — full corpus stress test"}
+   exercises: "78-move 平手 game ending in 詰み — full corpus stress test"},
+  {file: "lishogi_game_2026_04_08_3-kyu_BARACK_vs_7-Dan_Beniiro_pBl8sBxS.kif", moves: 68,
+   exercises: "平手 game ending in 詰み (checkmate)"},
+  {file: "lishogi_game_2026_04_25_3-Dan_YonnkennSaijyaku_vs_7-Dan_Beniiro_UgFO2Rav.kif", moves: 97,
+   exercises: "平手 game ending in 投了 (resignation)"},
+  {file: "lishogi_game_2026_04_25_7-Dan_Beniiro_vs_3-Dan_YonnkennSaijyaku_ZTcAdBqn.kif", moves: 73,
+   exercises: "平手 game ending in 切れ負け (loss on time)"},
+  {file: "lishogi_game_2026_04_27_7-Dan_Beniiro_vs_2-Dan_hayatenogotoku_sFHDfFJp.kif", moves: 87,
+   exercises: "平手 game ending in 詰み (checkmate)"}
 ]
 
 // Minishogi (5×5, 手合割：5五将棋) games are NOT in the corpus — our engine
